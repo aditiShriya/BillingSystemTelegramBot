@@ -12,11 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static java.lang.Integer.parseInt;
+
 
 public class VidhyutBot extends TelegramLongPollingBot
 {
     Login login = new Login();
     Bill bill = new Bill();
+
+    String last_command = "/start";
 
     public String getBotUsername() {
         return "VidyuhtBot";
@@ -25,6 +29,16 @@ public class VidhyutBot extends TelegramLongPollingBot
     @Override
     public String getBotToken() {
         return "1685411057:AAHMVARzF6tZfQIrCelDgZxC3fHZ0-dunGw";
+    }
+
+    public void setLoginKeyboard(ReplyKeyboardMarkup replyKeyboardMarkup) {
+        List<KeyboardRow> keyboardRowList =new ArrayList<>();
+        KeyboardRow keyboardRow1= new KeyboardRow();
+        KeyboardButton keyboardButton1= new KeyboardButton();
+        keyboardButton1.setText("Login");
+        keyboardRow1.add(keyboardButton1);
+        keyboardRowList.add(keyboardRow1);
+        replyKeyboardMarkup.setKeyboard(keyboardRowList);
     }
 
     public void onUpdateReceived(Update update)
@@ -40,18 +54,12 @@ public class VidhyutBot extends TelegramLongPollingBot
 
                 if (text.equals("/start"))
                 {
+                    last_command = text;
                     sendMessage.setText("Welcome to Vidhyut Bot \n Please use the /login command to continue.");
                     sendMessage.setParseMode(ParseMode.MARKDOWN);
                     sendMessage.setChatId(String.valueOf(message.getChatId()));
 
-                    //keyboard_Button
-                    List<KeyboardRow> keyboardRowList =new ArrayList<>();
-                    KeyboardRow keyboardRow1= new KeyboardRow();
-                    KeyboardButton keyboardButton1= new KeyboardButton();
-                    keyboardButton1.setText("Login");
-                    keyboardRow1.add(keyboardButton1);
-                    keyboardRowList.add(keyboardRow1);
-                    replyKeyboardMarkup.setKeyboard(keyboardRowList);
+                    setLoginKeyboard(replyKeyboardMarkup);
                     sendMessage.setReplyMarkup(replyKeyboardMarkup);
 
                     try {
@@ -59,8 +67,8 @@ public class VidhyutBot extends TelegramLongPollingBot
                     }catch(TelegramApiException e){
                         e.printStackTrace();
                     }
-                } else if (text.equals("/login") || text.equals("Login"))
-                {
+                } else if (text.equals("/login") || text.equals("Login")) {
+                    last_command = text;
                     sendMessage.setText("Please enter your username and password in space separated format. \n\n Example: userxxx passwxxxord");
                     sendMessage.setParseMode(ParseMode.MARKDOWN);
                     sendMessage.setChatId(String.valueOf(message.getChatId()));
@@ -70,8 +78,8 @@ public class VidhyutBot extends TelegramLongPollingBot
                     }catch(TelegramApiException e){
                         e.printStackTrace();
                     }
-                } else if (Pattern.matches("user[0-9]* [a-zA-Z]*[0-9]*", text))
-                {
+                } else if (Pattern.matches("user[0-9]* [a-zA-Z]*[0-9]*", text)) {
+                    last_command = text;
                     sendMessage.setText(login.checkCredentials(text.split(" ")[0], text.split(" ")[1], sendMessage));
                     sendMessage.setParseMode(ParseMode.MARKDOWN);
                     sendMessage.setChatId(String.valueOf(message.getChatId()));
@@ -82,12 +90,81 @@ public class VidhyutBot extends TelegramLongPollingBot
                         e.printStackTrace();
                     }
                 } else if (text.equals("View my details")) {
-
+                    last_command = text;
                     if (login.custName.equals("")) {
                         sendMessage.setText("Please login to view your details");
                     } else {
                         sendMessage.setText(bill.getCustomerDetails(login.getCustId()));
                     }
+                    sendMessage.setParseMode(ParseMode.MARKDOWN);
+                    sendMessage.setChatId(String.valueOf(message.getChatId()));
+
+                    try {
+                        execute(sendMessage);
+                    }catch(TelegramApiException e){
+                        e.printStackTrace();
+                    }
+                } else if (text.equals("View current due bill")) {
+                    last_command = text;
+                    if (login.custName.equals("")) {
+                        sendMessage.setText("Please login to view your details");
+                    } else {
+                        sendMessage.setText(bill.getCustomerDueBills(login.getCustId()));
+                    }
+                    sendMessage.setParseMode(ParseMode.MARKDOWN);
+                    sendMessage.setChatId(String.valueOf(message.getChatId()));
+
+                    try {
+                        execute(sendMessage);
+                    }catch(TelegramApiException e){
+                        e.printStackTrace();
+                    }
+                } else if (text.equals("View last paid bill")) {
+                    last_command = text;
+                    if (login.custName.equals("")) {
+                        sendMessage.setText("Please login to view your details");
+                    } else {
+                        sendMessage.setText(bill.getCustomerLastPaidBillDetails(login.getCustId()));
+                    }
+                    sendMessage.setParseMode(ParseMode.MARKDOWN);
+                    sendMessage.setChatId(String.valueOf(message.getChatId()));
+
+                    try {
+                        execute(sendMessage);
+                    }catch(TelegramApiException e){
+                        e.printStackTrace();
+                    }
+                } else if (text.equals("Calculate bill")) {
+                    last_command = text;
+                    if (login.custName.equals("")) {
+                        sendMessage.setText("Please login to view your details");
+                    } else {
+                        sendMessage.setText("Please enter your current meter reading.");
+                    }
+                    sendMessage.setParseMode(ParseMode.MARKDOWN);
+                    sendMessage.setChatId(String.valueOf(message.getChatId()));
+
+                    try {
+                        execute(sendMessage);
+                    }catch(TelegramApiException e){
+                        e.printStackTrace();
+                    }
+                } else if (Pattern.matches("[0-9]*", text)) {
+                    if (last_command.equals("Calculate bill")) {
+                        sendMessage.setText(bill.getCalculatedBill(login.getUserId(), parseInt(text)));
+                    } else {
+                        sendMessage.setText("Please choose 'Calculate bill' option before");
+                    }
+                    sendMessage.setParseMode(ParseMode.MARKDOWN);
+                    sendMessage.setChatId(String.valueOf(message.getChatId()));
+
+                    try {
+                        execute(sendMessage);
+                    }catch(TelegramApiException e){
+                        e.printStackTrace();
+                    }
+                } else if (text.equals("Pay bill")) {
+                    sendMessage.setText("Functionality coming soon!");
                     sendMessage.setParseMode(ParseMode.MARKDOWN);
                     sendMessage.setChatId(String.valueOf(message.getChatId()));
 
@@ -108,7 +185,7 @@ public class VidhyutBot extends TelegramLongPollingBot
                     }
                 } else if (text.equals("/logout") || text.equals("Logout")) {
                     if (login.getCustId().equals("")) {
-                        sendMessage.setText("You did not login!");
+                        sendMessage.setText("You did not login!\nPlease use /login to login and continue.");
                     } else {
                         sendMessage.setText("You have successfully been logged out!");
                         login.setCustId("");
@@ -117,6 +194,9 @@ public class VidhyutBot extends TelegramLongPollingBot
                         login.setUserId("");
                         login.setPwd("");
                     }
+                    setLoginKeyboard(replyKeyboardMarkup);
+                    sendMessage.setReplyMarkup(replyKeyboardMarkup);
+
                     sendMessage.setParseMode(ParseMode.MARKDOWN);
                     sendMessage.setChatId(String.valueOf(message.getChatId()));
 

@@ -45,6 +45,10 @@ public class Login {
         this.custId = "";
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
     public String getCustId() {
         return custId;
     }
@@ -95,19 +99,24 @@ public class Login {
         keyboardRowList.add(keyboardRow3);
         KeyboardRow keyboardRow4 = new KeyboardRow();
         KeyboardButton keyboardButton4 = new KeyboardButton();
-        keyboardButton4.setText("Pay bill");
+        keyboardButton4.setText("Calculate bill");
         keyboardRow4.add(keyboardButton4);
         keyboardRowList.add(keyboardRow4);
         KeyboardRow keyboardRow5 = new KeyboardRow();
         KeyboardButton keyboardButton5 = new KeyboardButton();
-        keyboardButton5.setText("Contact us");
+        keyboardButton5.setText("Pay bill");
         keyboardRow5.add(keyboardButton5);
         keyboardRowList.add(keyboardRow5);
         KeyboardRow keyboardRow6 = new KeyboardRow();
         KeyboardButton keyboardButton6 = new KeyboardButton();
-        keyboardButton6.setText("Logout");
+        keyboardButton6.setText("Contact us");
         keyboardRow6.add(keyboardButton6);
         keyboardRowList.add(keyboardRow6);
+        KeyboardRow keyboardRow7 = new KeyboardRow();
+        KeyboardButton keyboardButton7 = new KeyboardButton();
+        keyboardButton7.setText("Logout");
+        keyboardRow7.add(keyboardButton7);
+        keyboardRowList.add(keyboardRow7);
         replyKeyboardMarkup.setKeyboard(keyboardRowList);
         msg.setReplyMarkup(replyKeyboardMarkup);
     }
