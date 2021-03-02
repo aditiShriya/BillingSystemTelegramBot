@@ -164,6 +164,7 @@ public class VidhyutBot extends TelegramLongPollingBot
                         e.printStackTrace();
                     }
                 } else if (text.equals("Pay bill")) {
+                    this.last_command = text;
                     sendMessage.setText("Functionality coming soon!");
                     sendMessage.setParseMode(ParseMode.MARKDOWN);
                     sendMessage.setChatId(String.valueOf(message.getChatId()));

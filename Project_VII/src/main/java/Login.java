@@ -36,6 +36,8 @@ public class Login {
     public String custName;
     public Integer meterNo;
     public String custId;
+    public String db_user_id = "root";
+    public String db_pwd = "Aditi@1234";
 
     Login() {
         this.userId = "";
@@ -57,8 +59,7 @@ public class Login {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system","root","root");
-
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system?useSSL=false",this.db_user_id, this.db_pwd);
             Statement stmt=con.createStatement();
             ResultSet rs=stmt.executeQuery("select * from user_details where user_id in ('" + userId + "') and pwd in ('" + pwd + "')");
 

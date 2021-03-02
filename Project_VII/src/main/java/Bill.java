@@ -5,12 +5,14 @@ public class Bill {
     public int commercial_meter_charge = 8;
     public int personal_fixed_charge = 75;
     public int commercial_fixed_charge = 120;
+    public String db_user_id = "root";
+    public String db_pwd = "Aditi@1234";
 
     public String getCustomerDetails(String custId) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system?useSSL=false", "root", "root");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system?useSSL=false",this.db_user_id, this.db_pwd);
 
             Statement stmt = con.createStatement();
             ResultSet rs=stmt.executeQuery("select * from Consumer_Information where cust_id in ('" + custId + "')");
@@ -34,7 +36,7 @@ public class Bill {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system?useSSL=false", "root", "root");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system?useSSL=false",this.db_user_id, this.db_pwd);
 
             Statement stmt = con.createStatement();
             ResultSet rs=stmt.executeQuery("select c.Consumer_No, a.user_id, a.bill_month, a.year, a.meter_reading_end, " +
@@ -82,7 +84,7 @@ public class Bill {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system?useSSL=false", "root", "root");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system?useSSL=false",this.db_user_id, this.db_pwd);
 
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT a.user_id, a.transaction_id, " +
@@ -110,7 +112,7 @@ public class Bill {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system?useSSL=false", "root", "root");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/billing_system?useSSL=false",this.db_user_id, this.db_pwd);
 
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select meter_reading_end, meter_type FROM current_active_bill " +
